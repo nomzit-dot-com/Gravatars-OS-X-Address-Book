@@ -1,0 +1,8 @@
+//
+// Prefix header for all source files of the 'GetGravatar' target in the 'GetGravatar' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+    #import <AddressBook/AddressBook.h>
+#endif
