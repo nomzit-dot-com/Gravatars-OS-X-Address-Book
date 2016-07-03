@@ -126,6 +126,8 @@
 /* Begin PBXProject section */
 		0259C573FE90428111CA0C5A /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = C027D11D08A954E7001699E2 /* Build configuration list for PBXProject "GetGravatar" */;
 			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;
@@ -192,6 +194,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Developer/Palettes";
 				PRODUCT_NAME = GetGravatar;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = bundle;
 				ZERO_LINK = YES;
 			};
@@ -207,6 +210,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Developer/Palettes";
 				PRODUCT_NAME = GetGravatar;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;

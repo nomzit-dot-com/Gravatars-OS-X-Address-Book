@@ -7,7 +7,22 @@
 //
 
 #import "GetGravatar.h"
-#include <openssl/md5.h>
+#import <CommonCrypto/CommonDigest.h>
+
+@implementation NSString (md5)
+
+- (NSString *)md5 {
+    const char *src = [self UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(src, (CC_LONG)strlen(src), result);
+    return [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+            result[0], result[1], result[2], result[3],
+            result[4], result[5], result[6], result[7],
+            result[8], result[9], result[10], result[11],
+            result[12], result[13], result[14], result[15] ];
+}
+
+@end
 
 @implementation GetGravatar
 
@@ -29,29 +44,11 @@
 - (void)performActionForPerson:(ABPerson *)person identifier:(NSString *)identifier
 {
     //NSLog(@"performActionForPerson:%p identifier:%@",person,identifier);
-    unsigned char emailBytes[1024];
-    unsigned char emailMD5[16];
-    NSUInteger emailBytesUsed;
-    NSRange    emailRange;
     ABMultiValue* values = [person valueForProperty:[self actionProperty]];
     NSString* value = [[values valueForIdentifier:identifier] lowercaseString];
     //NSLog(@"Email address: %@",value);
-    emailRange.location = 0;
-    emailRange.length = [value length];
-    [value getBytes:emailBytes maxLength:sizeof emailBytes usedLength:&emailBytesUsed encoding:NSUTF8StringEncoding options:0 range:emailRange remainingRange:NULL];
-    //NSLog(@"Email address in array %.*s",emailBytesUsed,emailBytes);
-    MD5(emailBytes, emailBytesUsed, emailMD5);
     
-//    NSData*    emailHash;
-//    emailHash = [NSData dataWithBytes:emailMD5 length:sizeof emailMD5];
-//    NSLog(@"MD5 of email address %@",emailHash);
-    
-    NSString *URLString = [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx%2.2hhx?s=512&r=x&d=404"
-                                                    , emailMD5[0], emailMD5[1], emailMD5[2], emailMD5[3]
-                                                    , emailMD5[4], emailMD5[5], emailMD5[6], emailMD5[7]
-                                                    , emailMD5[8], emailMD5[9], emailMD5[10], emailMD5[11]
-                                                    , emailMD5[12], emailMD5[13], emailMD5[14], emailMD5[15]
-                          ];
+    NSString *URLString = [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=512&r=x&d=404", [value md5]];
 
     NSURL *gravatarURL = [NSURL URLWithString:URLString];
     //NSLog(@"Requesting Gravatar from %@",gravatarURL);
